@@ -1,4 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Run sink resource optimiser for "leave no source behind" consensus-based optimisation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -11,8 +10,8 @@ clear all
 fncts_folder = [cd,'\functions']; addpath(fncts_folder)
 
 %%% Optimisation Choices %%%
-def_cnstrnt = 'fi';     % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi', fixed total resource = 'ft'                 
-method = 'c';           % method choice: consensus-based == 'c', maximum flow == 'm'
+def_cnstrnt = 'fn';     % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi', fixed total resource = 'ft'                 
+method = 'm';           % method choice: consensus-based == 'c', maximum flow == 'm'
 n_select = 30;          % number of ground stations
 fi_max = 10;            % max individual resource for 'fi' constraint
 %%% %%% %%% %%%% %%% %%% %%%
