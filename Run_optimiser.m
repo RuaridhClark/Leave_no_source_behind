@@ -1,5 +1,4 @@
 % Run sink resource optimiser for "leave no source behind" consensus-based optimisation
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% Outputs %%%
 % selected - the sinks selected for resource allocation of 1 ('ft' case)
@@ -9,12 +8,12 @@
 clear all
 fncts_folder = [cd,'\functions']; addpath(fncts_folder)
 
-%%% Optimisation Choices %%%
-def_cnstrnt = 'fn';     % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi', fixed total resource = 'ft'                 
-method = 'm';           % method choice: consensus-based == 'c', maximum flow == 'm'
-n_select = 30;          % number of ground stations
-fi_max = 10;            % max individual resource for 'fi' constraint
-%%% %%% %%% %%%% %%% %%% %%%
+%%% Optimisation Setup %%%
+def_cnstrnt = 'fn';         % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi'                
+method = 'c';               % method choice: consensus-based == 'c', maximum flow == 'm'
+n_select = 10;              % number of ground stations
+fi_max = 1;                 % max individual resource for 'fi' constraint
+%%% %%% %%% %%% %%% %%% %%%
 
 %%% Parallelise %%%
 if strcmp(method,'c')
@@ -24,17 +23,25 @@ if strcmp(method,'c')
 end
 %%% %%% %%% %%% %%%
 
-
 %%% Inputs %%%
-load('Adj_100day.mat', 'Adj')   % Adjacency matrix from 100 day of contacts where time connected to ground station (sink) is divided by the number of nodes in contact with sink at a given time step
+load('Adj_100day.mat', 'Adj')	% Adjacency matrix from 100 day of contacts where time connected to ground station (sink) is divided by the number of nodes in contact with sink at a given time step
+Adj2 = [];                      % Empty 2-hop adjacency
 sources = 1:250;               	% source nodes included
 intermeds = 251:334;          	% intermediary nodes
 sinks = 335:411;               	% sink nodes included
 if strcmp(def_cnstrnt,'fn')
     fi_max = 1;
 end       
-%%% %%  %% %%%
+%%% %%% %%% %%%
 
 %%% Optimisation %%%
-[selected,resources] = Optimise_selection(Adj,n_select,sources,sinks,intermeds,def_cnstrnt,fi_max,method); % Optimise resource allocation
-%%% %% %%  %% %% %%%
+tic
+load('Adj2_100day_mf.mat','Adj2')       % Load 2-hop Adj where connection weight is defined by maximum flow
+if isempty(Adj2) && strcmp(method,'c')
+    [Adj] = Adj2_maxflow_weight(Adj); 	% Create 2-hop Adj where connection weight is defined by maximum flow
+else
+    Adj=Adj2;
+end
+[selected,resources] = Optimise_selection(method,Adj,n_select,sources,sinks,intermeds,def_cnstrnt,fi_max); % Optimise resource allocation
+time=toc;
+%%% %%% %%% %%% %%%
