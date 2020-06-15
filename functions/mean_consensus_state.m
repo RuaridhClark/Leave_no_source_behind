@@ -5,6 +5,7 @@ function [m,x] = mean_consensus_state(c,Adj,candidates,selected,sinks,sources,ts
         c(c>fi_max)=fi_max;
     end
     
+    v=zeros(1,length(sinks));
     v(candidates) = abs(c);
     v(selected) = fi_max*ones(1,length(selected));
 
