@@ -1,5 +1,5 @@
-%% Check for resources >= 1
 function stop = outfun(c, ~, ~, w) 
+% Output function that checks if resources greater than 1 have been allocated.
     stop = false;
     
     c=(w(1)-w(2))*abs(c)./sum(abs(c));

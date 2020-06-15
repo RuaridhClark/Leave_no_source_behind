@@ -1,8 +1,9 @@
-function [selected,candidates,c0] = update_resources(c,select_in,candidate_in,n_select,A,def_cnstrnt)
+function [selected,candidates,c0] = update_resources(c,select_in,candidate_in,n_select,Adj,sinks,def_cnstrnt)
     % Add to the list of 'selected' sink nodes and update the resource
     % vector 'c0' accordingly.
 
     if strcmp(def_cnstrnt,'fn')
+        c0=zeros(length(sinks),1);
         c0(select_in)=ones(length(select_in),1);
         c0(candidate_in)=(n_select-length(select_in))*abs(c)./sum(abs(c));
         
@@ -15,14 +16,15 @@ function [selected,candidates,c0] = update_resources(c,select_in,candidate_in,n_
             candidates=find((c0)>0 & c0<mx);
             chosen=find((c0)>=mx);
         else
-            candidates=find((c0)>=0 & c0<1);
+            candidates=find((c0)>0 & c0<1);
             chosen=find((c0)>=1);
         end    
         if length(chosen)>n_select                      % if more viable sinks than required
             opts=chosen(~ismember(chosen,select_in));
-            [~,I]=sort(sum(A(:,opts)),'descend');       % choose best connected sinks from viable options
+            [~,I]=sort(sum(Adj(opts,:)),'descend');       % choose best connected sinks from viable options
             selected = [select_in;opts(I(1:(n_select-length(select_in))))];
-            warning('final selections based on sink node outdegree')
+            warning('final selections based on sink node indegree')
+            
         else
             selected=chosen;
         end

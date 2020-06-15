@@ -7,8 +7,8 @@ function [A,b,Aeq,beq,lb,ub,nonlcon] = define_constraints(selected,candidates,n_
         b = n_select-length(selected);
         Aeq = [];
         beq = [];
-        lb = -0.001*ones(length(candidates),1);
-        ub = (fi_max+0.01)*ones(length(candidates),1);
+        lb = -0.001*ones(length(candidates),1);         % allow resource below 0 for optimiser to filter
+        ub = (fi_max+0.01)*ones(length(candidates),1);  % allow resource above 1 for optimiser to filter
         nonlcon=[];
     elseif strcmp(def_cnstrnt,'ft')
         % Define fmincon constraints

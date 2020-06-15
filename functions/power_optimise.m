@@ -1,8 +1,8 @@
 function [c0,m,p] = power_optimise(c,candidates,selected,n_select,sinks,sources,Adj,tstep,tfinal,def_cnstrnt,fi_max)
     % Simple power optimisation of resource vector 'c', where each vector
     % entry is raised to the same power before scaling the whole vector to
-    % not exceed its maximum size. Optimisation ends when increasing the 
-    % power no longer returns an improvement in mean consensus state of all 
+    % not exceed its maximum size. Optimisation ends when increasing the
+    % power no longer returns an improvement in mean consensus state of all
     % source nodes. (binary search could be implemented to improve
     % efficiency)
 
