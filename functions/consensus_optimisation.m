@@ -36,10 +36,19 @@ function [c,candidates] = consensus_optimisation(c0,candidates,selected,n_select
             save_c0=c0;
             save_m=m;
             [c0,~] = fmincon(f,c0,A,b,Aeq,beq,lb,ub,nonlcon,options);% Optimise resource c0 with fmincon
-            [c0,m,~] = power_optimise(c0,candidates,selected,n_select,sinks,sources,Adj,tstep,tfinal,def_cnstrnt,fi_max);% Scale resources according to power optimisation
-            while m<=save_m
+            [c0,~,~] = power_optimise(c0,candidates,selected,n_select,sinks,sources,Adj,tstep,tfinal,def_cnstrnt,fi_max);% Scale resources according to power optimisation
+            [~,~,tfinal] = steps2consensus(c0,Adj,sinks,sources,n_select,tlimit,tstep);% tfinal => 0.9*(number of steps to convergence)
+            [m,~] = mean_consensus_state(c0,Adj,candidates,selected,sinks,sources,tstep,tfinal,def_cnstrnt,fi_max);
+            while round(m,6)<=round(save_m,6)   % round to avoid numerical errors
                 save_c0=c0;
                 c0(c0==min(c0(c0>0)))=0;
+                c0=n_select*c0./sum(c0);
+                list = 1:length(c0);
+                while max(c0(list))>fi_max      % Ensure all resources below fi_max
+                    c0(c0>fi_max)=fi_max;
+                    list=find(c0<fi_max);
+                    c0(list)=(n_select-(length(c0)-length(list))*fi_max)*c0(list)./sum(c0(list));
+                end
                 save_m=m;
                 [c0,m,~] = power_optimise(c0,candidates,selected,n_select,sinks,sources,Adj,tstep,tfinal,def_cnstrnt,fi_max);% Scale resources according to power optimisation
             end
