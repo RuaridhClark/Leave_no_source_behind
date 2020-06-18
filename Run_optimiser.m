@@ -9,9 +9,9 @@ clear all
 fncts_folder = [cd,'\functions']; addpath(fncts_folder)
 
 %%% Optimisation Setup %%%
-def_cnstrnt = 'fn';         % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi'                
+def_cnstrnt = 'fi';         % set resource constraint: fixed number == 'fn', fixed individual & total resource = 'fi'                
 method = 'c';               % method choice: consensus-based == 'c', maximum flow == 'm'
-n_select = 10;              % number of ground stations
+n_select = 5;              % number of ground stations
 fi_max = 1;                 % max individual resource for 'fi' constraint
 %%% %%% %%% %%% %%% %%% %%%
 
@@ -39,7 +39,7 @@ tic
 load('Adj2_100day_mf.mat','Adj2')       % Load 2-hop Adj where connection weight is defined by maximum flow
 if isempty(Adj2) && strcmp(method,'c')
     [Adj] = Adj2_maxflow_weight(Adj); 	% Create 2-hop Adj where connection weight is defined by maximum flow
-else
+elseif ~isempty(Adj2) && strcmp(method,'c')
     Adj=Adj2;
 end
 [selected,resources] = Optimise_selection(method,Adj,n_select,sources,sinks,intermeds,def_cnstrnt,fi_max); % Optimise resource allocation
