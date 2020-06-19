@@ -27,7 +27,7 @@ function [c,candidates] = consensus_optimisation(c0,candidates,selected,n_select
             end
             c=c0;
         else                                                        % if only one sink required, then check every sink for the best final selection
-            [c] = final_selection(Adj,c0,candidates,selected,sinks,sources,n_select,tstep,tlimit);
+            [c] = final_selection(Adj,c0,candidates,selected,sinks,sources,tstep,tfinal,def_cnstrnt,fi_max);
         end
     elseif strcmp(def_cnstrnt,'fi')                                 % OPT START: If making a variable resource allocation                                                           
         m=1; save_m=2;                                              % initial while loop variables
