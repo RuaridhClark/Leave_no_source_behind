@@ -1,5 +1,5 @@
 # Leave_no_source_behind
-Code developed for manuscript: *Leave no source behind; data sink selection for a ground station and spacecraft constellation network*. CN McGrath, RA Clark, M Macdonald.
+Code developed for manuscript: *Data sink selection using consensus leadership: improving target connectivity for a spacecraft constellation*. RA Clark, CN McGrath, M Macdonald.
 
 **Run_optimiser.m** - select between consensus or maximum flow based optimiser of sink nodes in a flow network
 
