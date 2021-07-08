@@ -10,10 +10,13 @@ function [selected,resources] = Optimise_selection(method,Adj,n_select,sources,s
     if strcmp(method,'m')                                   
         [Adj] = Adj4maxflow(Adj,sinks,sources);             % Add dummy sink and source nodes for max flow evaluation
         [selected,resources] = maxflow_selection(Adj,candidates,n_select,sinks,intermeds);
+    elseif strcmp(method,'g')
+        Adj_sinks = Adj(:,sinks);
+        [selected,resources] = gstation_connection_select(Adj_sinks,candidates,n_select);
     elseif strcmp(method,'c')                               % consensus-based method
         tlimit = 5000;                                      % define convergence step limit
      	tstep = 0.999*1/max(sum(Adj,2));                    % define feasible time step that ensures convergence
-        c = ones(length(sinks),1)./length(sinks); % define uniform resource vector
+        c = ones(length(sinks),1)./length(sinks);           % define uniform resource vector
         [~,~,tfinal] = steps2consensus(c,Adj,sinks,sources,n_select,tlimit,tstep);% tfinal => 0.9*(number of steps to convergence)
         
         run = 1;                                            % while loop exit variable
@@ -24,7 +27,7 @@ function [selected,resources] = Optimise_selection(method,Adj,n_select,sources,s
                 c0=c;
             end
             [c,candidates] = consensus_optimisation(c0,candidates,selected,n_select,sinks,sources,Adj,tstep,tfinal,tlimit,def_cnstrnt,fi_max);
-
+            
             [selected,candidates,c] = update_resources(c,selected,candidates,n_select,Adj,sinks,def_cnstrnt);
                                                                           
             [run,resources] = prepare_output(c,def_cnstrnt,selected,n_select,sinks);% Prepare output if end of optimisation

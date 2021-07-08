@@ -24,7 +24,7 @@ end
 %%% %%% %%% %%% %%%
 
 %%% Inputs %%%
-load('Adj_100day.mat', 'Adj')	% Adjacency matrix from 100 day of contacts where time connected to ground station (sink) is divided by the number of nodes in contact with sink at a given time step
+load('data/Adj_100day.mat', 'Adj')	% Adjacency matrix from 100 day of contacts where time connected to ground station (sink) is divided by the number of nodes in contact with sink at a given time step
 Adj2 = [];                      % Empty 2-hop adjacency
 sources = 1:250;               	% source nodes included
 intermeds = 251:334;          	% intermediary nodes
@@ -41,6 +41,16 @@ if isempty(Adj2) && strcmp(method,'c')
 elseif ~isempty(Adj2) && strcmp(method,'c')
     Adj=Adj2;
 end
+
+%%% Reduce Adj %%%
+Adj=Adj([sources,intermeds,sinks],[sources,intermeds,sinks]);
+
+% sources=(1:length(sources));
+sm_si = length(sources)+length(intermeds);
+intermeds=(length(sources)+1:sm_si);
+sinks = (sm_si+1:sm_si+length(sinks));
+%%%
+
 [selected,resources] = Optimise_selection(method,Adj,n_select,sources,sinks,intermeds,def_cnstrnt,fi_max); % Optimise resource allocation
 time=toc;
 %%% %%% %%% %%% %%%
